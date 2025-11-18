@@ -7,7 +7,7 @@ def run_command(
     *,
     shell: bool = False,
     reraise: bool = False,
-) -> subprocess.CompletedProcess:
+) -> subprocess.CompletedProcess[bytes]:
     """Runs a shell command and checks for errors."""
     try:
         return subprocess.run(  # noqa: S603
