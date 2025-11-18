@@ -16,6 +16,7 @@ class Profile:
 class GCPAuthVault:
     def __init__(self) -> None:
         self.VAULT_DIR = Path.home() / ".gcp-auth"
+        self.PROFILES_DIR = self.VAULT_DIR / "profiles"
 
         if os.name == "nt":
             self.GCLOUD_CONFIG_DIR = Path(os.environ.get("APPDATA")) / "gcloud"
@@ -29,14 +30,14 @@ class GCPAuthVault:
 
     def ensure_vault(self) -> None:
         """Creates the storage directory if it doesn't exist."""
-        if not self.VAULT_DIR.exists():
-            self.VAULT_DIR.mkdir(parents=True)
+        if not self.PROFILES_DIR.exists():
+            self.PROFILES_DIR.mkdir(parents=True)
 
     def is_gcloud_installed(self) -> bool:
         return shutil.which("gcloud") is not None
 
     def register(self, profile: Profile, *, force: bool = False) -> None:
-        profile_dir = self.VAULT_DIR / profile.name
+        profile_dir = self.PROFILES_DIR / profile.name
 
         if profile_dir.exists() and not force:
             msg = (
@@ -91,4 +92,10 @@ class GCPAuthVault:
         shutil.copy(self.DEFAULT_ADC_PATH, profile_dir / self.ADC_FILENAME)
         print(f"\n✓ Credentials captured and stored in vault: {profile_dir.resolve()}")
 
+    def list_profiles(self) -> list[Profile]:
+        """Lists all stored profiles."""
+        if not self.PROFILES_DIR.exists():
+            return []
+
+        return [Profile(p.name) for p in self.VAULT_DIR.iterdir() if p.is_dir()]
 
