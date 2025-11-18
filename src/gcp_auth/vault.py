@@ -99,7 +99,7 @@ class GCPAuthVault:
 
         return [Profile(p.name) for p in self.VAULT_DIR.iterdir() if p.is_dir()]
 
-    def set_profile(self, profile: Profile) -> None:
+    def set_active_profile(self, profile: Profile) -> None:
         profile_dir = self.PROFILES_DIR / profile.name
 
         if not profile_dir.exists():
