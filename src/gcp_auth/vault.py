@@ -150,7 +150,7 @@ class GCPAuthVault:
             msg = f"Error copying credentials: {e}"
             raise RuntimeError(msg) from e
         else:
-            print(f"{CHECK} Credentials set: {path}")
+            print(f"{CHECK} application default credentials set to: {path}")
 
     def delete_profile(self, profile: Profile) -> None:
         profile_dir = self.PROFILES_DIR / profile.name
