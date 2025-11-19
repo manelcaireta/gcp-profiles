@@ -10,7 +10,7 @@ app = typer.Typer()
 
 @app.command()
 def create(profile_name: str, *, force: bool = False) -> None:
-    vault.register(Profile(profile_name), force=force)
+    vault.register(Profile(name=profile_name), force=force)
 
 
 @app.command()
@@ -21,4 +21,4 @@ def list() -> None:  # noqa: A001
 
 @app.command()
 def activate(profile_name: str) -> None:
-    vault.set_active_profile(Profile(profile_name))
+    vault.set_active_profile(Profile(name=profile_name))
