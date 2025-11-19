@@ -36,15 +36,17 @@ class GCPAuthVault:
 
     def register(self, profile: Profile, *, force: bool = False) -> None:
         self._create_clean_profile(profile.name, force=force)
-        created_new_config = self._create_gcloud_configuration(profile.name)
-        if created_new_config:
-            self._gcloud_login()
-        else:
-            print("Step 1/2: Skipping Login (configuration already exists)...")
+        self._create_or_activate_gcloud_configuration(profile.name)
+
+        print("Step 1/2: Login for the gcloud cli...")
+        self._gcloud_login()
+
+        print("\nStep 2/2: Application Default Login (for your code)...")
         self._gcloud_adc_login()
+
         self._capture_adc(profile.name)
 
-        print("You can now safely switch to other profiles.")
+        print("\nYou can now safely switch to other profiles.")
 
     def _create_clean_profile(self, name: str, *, force: bool = False) -> None:
         """Creates a clean profile directory."""
@@ -61,30 +63,32 @@ class GCPAuthVault:
             shutil.rmtree(profile_dir)
         profile_dir.mkdir(exist_ok=True)
 
-    def _create_gcloud_configuration(self, name: str) -> bool:
+    def _create_or_activate_gcloud_configuration(self, name: str) -> None:
         """
         Attempts to create a new configuration or activate an already existing one.
-
-        Returns:
-            Weather a new configuration was created
         """
 
         try:
-            run_command(
-                ["gcloud", "config", "configurations", "create", name],
-                reraise=True,
-            )
+            self._create_gcloud_configuration(name)
         except subprocess.CalledProcessError:
             print(
                 f"[yellow][bold]Warning[/yellow]:[/bold] gcloud configuration '{name}' "
                 "already exists, activating...",
             )
-            run_command(["gcloud", "config", "configurations", "activate", name])
-            print(f"[green]✓[reset] gcloud configuration '{name}' activated")
-            return False
+            self._switch_gcloud_configuration(name)
         else:
             print(f"[green]✓[reset] Created gcloud configuration '{name}'")
-            return True
+
+    def _create_gcloud_configuration(self, name: str) -> None:
+        run_command(
+            ["gcloud", "config", "configurations", "create", name],
+            reraise=True,
+        )
+        print(f"[green]✓[reset] Created gcloud configuration '{name}'")
+
+    def _switch_gcloud_configuration(self, name: str) -> None:
+        run_command(["gcloud", "config", "configurations", "activate", name])
+        print(f"[green]✓[reset] gcloud configuration '{name}' activated")
 
     def _gcloud_login(self) -> None:
         """Performs the standard Login (for CLI tools)."""
@@ -95,8 +99,6 @@ class GCPAuthVault:
 
     def _gcloud_adc_login(self) -> None:
         """Performs the ADC Login (for code/libraries)."""
-
-        print("\nStep 2/2: Application Default Login (for your code)...")
         run_command(["gcloud", "auth", "application-default", "login"])
 
         if not self.DEFAULT_ADC_PATH.exists():
@@ -144,9 +146,6 @@ class GCPAuthVault:
 
         self._override_adc(credentials)
         print(f"[green]✓[reset] Restored ADC credentials for '{profile.name}'")
-
-    def _switch_gcloud_configuration(self, profile_name: str) -> None:
-        run_command(["gcloud", "config", "configurations", "activate", profile_name])
 
     def _override_adc(self, path: Path) -> None:
         try:
