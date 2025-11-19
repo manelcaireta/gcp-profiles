@@ -126,33 +126,30 @@ class GCPAuthVault:
         profile_dir = self.PROFILES_DIR / profile.name
 
         if not profile_dir.exists():
-            print(f"Profile '{profile.name}' not found in vault.")
-            print(
-                "Available profiles:\n",
-                ", ".join(p.name for p in self.list_profiles()),
+            available_profiles = (p.name for p in self.list_profiles())
+            msg = (
+                f"Profile '{profile.name}' not found in vault. "
+                f"Available profiles: {', '.join(available_profiles)}"
             )
-            sys.exit(1)
+            raise ValueError(msg)
 
         credentials = profile_dir / self.ADC_FILENAME
 
         if not credentials.exists():
-            print(
-                f"No credentials file found for '{profile.name}'.",
-            )
-            sys.exit(1)
+            msg = f"No credentials file found for '{profile.name}'."
+            raise ValueError(msg)
 
         self._switch_gcloud_configuration(profile.name)
-        print(f"[green]✓[reset] Set gcloud config to '{profile.name}'")
-
         self._override_adc(credentials)
-        print(f"[green]✓[reset] Restored ADC credentials for '{profile.name}'")
 
     def _override_adc(self, path: Path) -> None:
         try:
             shutil.copy(path, self.DEFAULT_ADC_PATH)
-        except Exception as e:  # noqa: BLE001
-            print(f"Error copying credentials: {e}")
-            sys.exit(1)
+        except Exception as e:
+            msg = f"Error copying credentials: {e}"
+            raise RuntimeError(msg) from e
+        else:
+            print(f"[green]✓[reset] Credentials set: {path}")
 
     def delete_profile(self, profile: Profile) -> None:
         profile_dir = self.PROFILES_DIR / profile.name
