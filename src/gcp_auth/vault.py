@@ -14,6 +14,9 @@ class Profile:
     name: str
 
 
+CHECK = "[green bold]✓[reset]"
+
+
 class GCPAuthVault:
     def __init__(self) -> None:
         self.VAULT_DIR = Path.home() / ".config" / "gcp-auth"
@@ -77,25 +80,23 @@ class GCPAuthVault:
             )
             self._switch_gcloud_configuration(name)
         else:
-            print(f"[green]✓[reset] Created gcloud configuration '{name}'")
+            print(f"{CHECK} Created gcloud configuration '{name}'")
 
     def _create_gcloud_configuration(self, name: str) -> None:
         run_command(
             ["gcloud", "config", "configurations", "create", name],
             reraise=True,
         )
-        print(f"[green]✓[reset] Created gcloud configuration '{name}'")
+        print(f"{CHECK} Created gcloud configuration '{name}'")
 
     def _switch_gcloud_configuration(self, name: str) -> None:
         run_command(["gcloud", "config", "configurations", "activate", name])
-        print(f"[green]✓[reset] gcloud configuration '{name}' activated")
+        print(f"{CHECK} gcloud configuration '{name}' activated")
 
     def _gcloud_login(self) -> None:
         """Performs the standard Login (for CLI tools)."""
-
-        print("\nStep 1/2: Standard Login (for CLI tools)...")
         run_command(["gcloud", "auth", "login"])
-        print("✓ gcloud auth properly set")
+        print(f"{CHECK} gcloud auth properly set")
 
     def _gcloud_adc_login(self) -> None:
         """Performs the ADC Login (for code/libraries)."""
@@ -105,13 +106,13 @@ class GCPAuthVault:
             print("Error: ADC file was not generated. Login may have failed.")
             sys.exit(1)
 
-        print("[green]✓[reset] ADC properly set")
+        print(f"{CHECK} ADC properly set")
 
     def _capture_adc(self, profile_name: str) -> None:
         profile_dir = self.PROFILES_DIR / profile_name
         shutil.copy(self.DEFAULT_ADC_PATH, profile_dir / self.ADC_FILENAME)
         print(
-            "\n[green]✓[reset] Credentials captured and stored in vault: "
+            f"\n{CHECK} Credentials captured and stored in vault: "
             f"{profile_dir.resolve()}",
         )
 
@@ -128,8 +129,8 @@ class GCPAuthVault:
         if not profile_dir.exists():
             available_profiles = (p.name for p in self.list_profiles())
             msg = (
-                f"Profile '{profile.name}' not found in vault. "
-                f"Available profiles: {', '.join(available_profiles)}"
+                f"Profile '{profile.name}' not found in vault.\n"
+                f"\nAvailable profiles:\n {', '.join(available_profiles)}"
             )
             raise ValueError(msg)
 
@@ -149,7 +150,7 @@ class GCPAuthVault:
             msg = f"Error copying credentials: {e}"
             raise RuntimeError(msg) from e
         else:
-            print(f"[green]✓[reset] Credentials set: {path}")
+            print(f"{CHECK} Credentials set: {path}")
 
     def delete_profile(self, profile: Profile) -> None:
         profile_dir = self.PROFILES_DIR / profile.name
