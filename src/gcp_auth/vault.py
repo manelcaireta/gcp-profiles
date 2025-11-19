@@ -155,12 +155,8 @@ class GCPAuthVault:
         profile_dir = self.PROFILES_DIR / profile.name
 
         if not profile_dir.exists():
-            print(f"Profile '{profile.name}' not found in vault.")
-            print(
-                "Available profiles:\n",
-                ", ".join(p.name for p in self.list_profiles()),
-            )
-            sys.exit(1)
+            msg = f"Profile '{profile.name}' not found in vault."
+            raise ValueError(msg)
 
         shutil.rmtree(profile_dir)
         print(f"Profile '{profile.name}' deleted from vault.")
