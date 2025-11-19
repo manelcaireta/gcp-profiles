@@ -1,14 +1,14 @@
 [project]
-name = "gcp-auth"
+name = "gcp-profiles"
 version = "0.1.0"
-description = "Add your description here"
+description = "A simple gcloud auth and adc manager."
 readme = "README.md"
-authors = [{ name = "Manel Caireta", email = "m.caireta@altostratus.es" }]
+authors = [{ name = "Manel Caireta", email = "manelkireta@gmail.com" }]
 requires-python = ">=3.13"
 dependencies = ["rich>=14.2.0", "typer>=0.20.0"]
 
 [project.scripts]
-gcp-auth = "gcp_auth:main"
+gcp-profiles = "gcp_profiles:main"
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]

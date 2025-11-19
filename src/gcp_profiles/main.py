@@ -7,7 +7,7 @@ from typing import Annotated
 import typer
 from rich import print  # noqa: A004
 
-from gcp_auth.vault import GCPAuthVault, Profile
+from gcp_profiles.vault import GCPAuthVault, Profile
 
 vault = GCPAuthVault()
 

@@ -5,7 +5,7 @@ from pathlib import Path
 
 from rich import print  # noqa: A004
 
-from gcp_auth.utils import run_command
+from gcp_profiles.utils import run_command
 
 
 @dataclass
