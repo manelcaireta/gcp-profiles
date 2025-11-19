@@ -1,4 +1,3 @@
-import os
 import shutil
 import subprocess
 import sys
@@ -15,14 +14,9 @@ class Profile:
 
 class GCPAuthVault:
     def __init__(self) -> None:
-        self.VAULT_DIR = Path.home() / ".gcp-auth"
+        self.VAULT_DIR = Path.home() / ".config" / "gcp-auth"
         self.PROFILES_DIR = self.VAULT_DIR / "profiles"
-
-        if os.name == "nt":
-            self.GCLOUD_CONFIG_DIR = Path(os.environ.get("APPDATA")) / "gcloud"
-        else:
-            self.GCLOUD_CONFIG_DIR = Path.home() / ".config" / "gcloud"
-
+        self.GCLOUD_CONFIG_DIR = Path.home() / ".config" / "gcloud"
         self.ADC_FILENAME = "application_default_credentials.json"
         self.DEFAULT_ADC_PATH = self.GCLOUD_CONFIG_DIR / self.ADC_FILENAME
 
