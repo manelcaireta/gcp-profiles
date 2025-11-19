@@ -41,3 +41,9 @@ def list() -> None:  # noqa: A001
 def activate(profile_name: str) -> None:
     with handle_errors():
         vault.set_active_profile(Profile(name=profile_name))
+
+
+@app.command()
+def delete(profile_name: str) -> None:
+    with handle_errors():
+        vault.delete_profile(Profile(name=profile_name))

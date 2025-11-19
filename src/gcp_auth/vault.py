@@ -154,3 +154,17 @@ class GCPAuthVault:
         except Exception as e:  # noqa: BLE001
             print(f"Error copying credentials: {e}")
             sys.exit(1)
+
+    def delete_profile(self, profile: Profile) -> None:
+        profile_dir = self.PROFILES_DIR / profile.name
+
+        if not profile_dir.exists():
+            print(f"Profile '{profile.name}' not found in vault.")
+            print(
+                "Available profiles:\n",
+                ", ".join(p.name for p in self.list_profiles()),
+            )
+            sys.exit(1)
+
+        shutil.rmtree(profile_dir)
+        print(f"Profile '{profile.name}' deleted from vault.")
