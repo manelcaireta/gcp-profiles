@@ -79,8 +79,6 @@ class GCPAuthVault:
                 "already exists, activating...",
             )
             self._switch_gcloud_configuration(name)
-        else:
-            print(f"{CHECK} Created gcloud configuration '{name}'")
 
     def _create_gcloud_configuration(self, name: str) -> None:
         run_command(
