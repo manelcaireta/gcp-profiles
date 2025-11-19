@@ -40,7 +40,7 @@ class GCPAuthVault:
         if created_new_config:
             self._gcloud_login()
         else:
-            print("Reusing existing configuration...")
+            print("Step 1/2: Skipping Login (configuration already exists)...")
         self._gcloud_adc_login()
         self._capture_adc(profile.name)
 
@@ -76,7 +76,7 @@ class GCPAuthVault:
             )
         except subprocess.CalledProcessError:
             print(
-                f"[yellow][bold]Warning[reset]: gcloud configuration '{name}' "
+                f"[yellow][bold]Warning[/yellow]:[/bold] gcloud configuration '{name}' "
                 "already exists, activating...",
             )
             run_command(["gcloud", "config", "configurations", "activate", name])
