@@ -29,8 +29,10 @@ class GCPAuthVault:
         if not self.PROFILES_DIR.exists():
             self.PROFILES_DIR.mkdir(parents=True)
 
-    def is_gcloud_installed(self) -> bool:
-        return shutil.which("gcloud") is not None
+    def check_gcloud_installed(self) -> None:
+        if not shutil.which("gcloud"):
+            msg = "gcloud is not installed or not in PATH"
+            raise RuntimeError(msg)
 
     def register(self, profile: Profile, *, force: bool = False) -> None:
         self._create_clean_profile(profile.name, force=force)
