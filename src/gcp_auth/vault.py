@@ -1,6 +1,5 @@
 import shutil
 import subprocess
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -101,8 +100,8 @@ class GCPAuthVault:
         run_command(["gcloud", "auth", "application-default", "login"])
 
         if not self.DEFAULT_ADC_PATH.exists():
-            print("Error: ADC file was not generated. Login may have failed.")
-            sys.exit(1)
+            msg = "Error: ADC file was not generated. Login may have failed."
+            raise RuntimeError(msg)
 
         print(f"{CHECK} ADC properly set")
 
