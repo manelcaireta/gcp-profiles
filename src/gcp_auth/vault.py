@@ -31,21 +31,28 @@ class GCPAuthVault:
         return shutil.which("gcloud") is not None
 
     def register(self, profile: Profile, *, force: bool = False) -> None:
-        profile_dir = self.PROFILES_DIR / profile.name
-
-        if profile_dir.exists() and not force:
-            msg = (
-                f"Profile '{profile.name}' already exists in the manager."
-                "Use --force to overwrite."
-            )
-            raise ValueError(msg)
-
+        self._create_clean_profile(profile.name, force=force)
         self._create_gcloud_configuration(profile.name)
         self._gcloud_login()
         self._gcloud_adc_login()
-        self._capture_adc(profile_dir)
+        self._capture_adc(profile.name)
 
         print("You can now safely switch to other profiles.")
+
+    def _create_clean_profile(self, name: str, *, force: bool = False) -> None:
+        """Creates a clean profile directory."""
+        profile_dir = self.PROFILES_DIR / name
+
+        if profile_dir.exists() and not force:
+            msg = (
+                f"Profile '{name}' already exists in the manager. "
+                "Use --force to overwrite."
+            )
+            raise ValueError(msg)
+        if profile_dir.exists() and force:
+            print(f"Overwriting profile '{name}'...")
+            shutil.rmtree(profile_dir)
+        profile_dir.mkdir(exist_ok=True)
 
     def _create_gcloud_configuration(self, name: str) -> None:
         """
@@ -82,7 +89,8 @@ class GCPAuthVault:
 
         print("✓ ADC properly set")
 
-    def _capture_adc(self, profile_dir: Path) -> None:
+    def _capture_adc(self, profile_name: str) -> None:
+        profile_dir = self.PROFILES_DIR / profile_name
         shutil.copy(self.DEFAULT_ADC_PATH, profile_dir / self.ADC_FILENAME)
         print(f"\n✓ Credentials captured and stored in vault: {profile_dir.resolve()}")
 
