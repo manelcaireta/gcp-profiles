@@ -11,6 +11,10 @@ license = { file = "LICENSE" }
 [project.scripts]
 gcp-profiles = "gcp_profiles:main"
 
+[project.urls]
+Respository = "https://github.com/manelcaireta/gcp-profiles.git"
+Issues = "https://github.com/manelcaireta/gcp-profiles/issues"
+
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
 build-backend = "uv_build"
