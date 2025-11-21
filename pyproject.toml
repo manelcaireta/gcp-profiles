@@ -1,6 +1,6 @@
 [project]
 name = "gcp-profiles"
-version = "0.1.0"
+version = "0.1.1"
 description = "A simple gcloud auth and adc manager."
 readme = "README.md"
 authors = [{ name = "Manel Caireta", email = "manelkireta@gmail.com" }]
