@@ -25,7 +25,14 @@ def handle_errors() -> Iterator:
         raise typer.Exit(code=1) from e
 
 
-ProfileArgument = Annotated[str, typer.Argument(help="Name of the profile.")]
+def list_profile_names() -> Iterator[str]:
+    return (profile.name for profile in vault.list_profiles())
+
+
+ProfileArgument = Annotated[
+    str,
+    typer.Argument(help="Name of the profile.", autocompletion=list_profile_names),
+]
 ForceOption = Annotated[bool, typer.Option(help="Overwrite existing profile.")]
 
 
