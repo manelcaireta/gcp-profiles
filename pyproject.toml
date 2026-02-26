@@ -12,7 +12,7 @@ license = { file = "LICENSE" }
 gcp-profiles = "gcp_profiles:main"
 
 [project.urls]
-Respository = "https://github.com/manelcaireta/gcp-profiles.git"
+Repository = "https://github.com/manelcaireta/gcp-profiles.git"
 Issues = "https://github.com/manelcaireta/gcp-profiles/issues"
 
 [build-system]
